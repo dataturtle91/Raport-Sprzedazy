@@ -1,2 +1,4 @@
 config.yml
 linki.txt
+data/*.db
+logs/*.txt
