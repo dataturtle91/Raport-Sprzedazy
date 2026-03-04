@@ -30,21 +30,4 @@ load_to_sqlite <- function(input_df, db_path = params$database) {
                                         input_df$sum))
     
     message("Proces ładowania zakończony.")
-    
-    
-    # 4. Pobranie liczby dodanych rekordów
-    # Funkcja changes() zwraca liczbę wierszy wstawionych w ostatnim kroku
-    added_count <- dbGetQuery(con, "SELECT changes()")[[1]]
-    
-    # Obliczenie pominiętych rekordów
-    total_input <- nrow(input_df)
-    ignored_count <- total_input - added_count
-    
-    # Komunikat dla użytkownika
-    message(sprintf("Operacja zakończona sukcesem!"))
-    message(sprintf("- Przekazano do przetworzenia: %d", total_input))
-    message(sprintf("- Nowo dodanych rekordów: %d", added_count))
-    message(sprintf("- Pominiętych duplikatów: %d", ignored_count))
-    
-    return(invisible(added_count)) # Zwraca liczbę dodanych wierszy po cichu
 }
