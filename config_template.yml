@@ -1,0 +1,6 @@
+default:
+  shop_url: "https://shopurl.shoparena.pl/webapi/rest/"
+  database: "data/orders.db"
+  token: "token"
+  threshold_kpi: 1000
+  email_recipients: ["name@example.com"]
