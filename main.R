@@ -3,8 +3,9 @@ library(tidyverse)
 
 params <- config::get()
 
+# ŁADOWANIE ZAMÓWIEŃ 
 
-# Pobierz zamowienia
+## Pobierz zamówienia
 
 source("R/api_shoper.R")
 
@@ -19,15 +20,21 @@ for (i in 1:shoper_response$pages){
 }
 
 
-# Przygotuj ramke danych do zaladowania do bazy
+## Przygotuj ramkę danych do załadowania do bazy
 
 source("R/df_transformation.R")
 input_df <- prepare_df(response_df)
 
-# Załaduj dane do bazy
+## Załaduj dane do bazy
 
 source("R/load_to_sqlite.R")
 load_to_sqlite(input_df)
+
+## Usuń zbędne obiekty po załadowaniu danych i uruchom garbage collector
+
+source("R/clean_memory.R")
+clean_memory()
+
 
 
 
