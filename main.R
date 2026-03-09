@@ -3,7 +3,8 @@ library(tidyverse)
 
 params <- config::get()
 
-# ŁADOWANIE ZAMÓWIEŃ 
+#-------------------
+# I. ŁADOWANIE ZAMÓWIEŃ
 
 ## Pobierz zamówienia
 
@@ -13,7 +14,7 @@ shoper_response <- shoper_get('orders')
 response_df <- data.frame()
 
 for (i in 1:shoper_response$pages){
-  additional_page <- shoper_get('orders', 
+  additional_page <- shoper_get('orders',
                      query = list(page = i))
   additional_page_df <- as.data.frame(additional_page$list)
   response_df <- bind_rows(response_df, additional_page_df)
@@ -34,6 +35,68 @@ load_to_sqlite(input_df)
 
 source("R/clean_memory.R")
 clean_memory()
+
+
+
+
+
+
+#---------------
+
+# II. OBLICZANIE KPI I TWORZENIE WYKRESÓW
+
+## Oblicz KPI na podstawie danych z bazy
+
+### AOV
+
+source("R/prepare_kpi_aov.R")
+kpi_aov <- prepare_kpi_aov()
+
+### TOTAL ORDERS
+source("R/prepare_kpi_total_orders.R")
+kpi_total_orders <- prepare_kpi_total_orders()
+
+
+
+
+
+
+#----------------
+# III.  WYSYŁKA RAPORTU
+
+library(emayili)
+
+
+## HTML maila
+html_body <- paste0(
+    "<h2>Raport sprzedaży</h2>",
+    "<p> Liczba zamówień ",kpi_total_orders,"</p>",
+    "<p> Średnia wartość zamówienia: ",kpi_aov, "</p>"
+)
+
+
+## Email
+email <- envelope() %>%
+    from(params$user) %>%
+    to(params$mail_to) %>%
+    subject("Raport sprzedaży") %>%
+    html(html_body)
+
+
+
+## Konfiguracja SMTP
+
+smtp <- server(
+    host = params$host,
+    port = 587,
+    username = params$user,
+    password = params$password
+)
+
+## Wysyłka 
+
+smtp(email)
+
 
 
 
