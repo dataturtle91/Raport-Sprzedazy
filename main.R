@@ -33,11 +33,8 @@ load_to_sqlite(input_df)
 
 ## Usuń zbędne obiekty po załadowaniu danych i uruchom garbage collector
 
-source("R/clean_memory.R")
-clean_memory()
-
-
-
+# source("R/clean_memory.R")
+# clean_memory()
 
 
 
@@ -51,6 +48,12 @@ clean_memory()
 
 source("R/prepare_kpi_aov.R")
 kpi_aov <- prepare_kpi_aov()
+
+
+### MEDIAN OF VALUE
+
+source("R/prepare_kpi_median_of_value.R")
+kpi_mov <- prepare_kpi_mov()
 
 ### TOTAL ORDERS
 source("R/prepare_kpi_total_orders.R")
@@ -71,7 +74,8 @@ library(emayili)
 html_body <- paste0(
     "<h2>Raport sprzedaży</h2>",
     "<p> Liczba zamówień ",kpi_total_orders,"</p>",
-    "<p> Średnia wartość zamówienia: ",kpi_aov, "</p>"
+    "<p> Średnia wartość zamówienia: ",kpi_aov, "</p>",
+    "<p> Mediana wartości zamówienia: ",kpi_mov, "</p>"
 )
 
 
@@ -96,6 +100,7 @@ smtp <- server(
 ## Wysyłka 
 
 smtp(email)
+
 
 
 
